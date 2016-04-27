@@ -1,5 +1,0 @@
-rootProject.name = 'NBTProxy'
-include 'v1_9_R1'
-include 'core'
-include 'v1_8_R3'
-

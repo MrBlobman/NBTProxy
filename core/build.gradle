@@ -1,5 +1,0 @@
-dependencies {
-    compile group: 'org.spigotmc', name: 'spigot-api', version: '+'
-}
-
-javadoc.setDestinationDir(file("../docs"))
