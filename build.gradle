@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {  url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1"
+    }
+}
+
+group 'io.github.mrblobman'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'maven-publish'
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: "com.github.hierynomus.license" //Ensure all files have the license header
+
+    license {
+        include '**/*.java'
+        header = rootProject.file('LICENSE')
+        strictCheck true
+    }
+    assemble.dependsOn licenseFormat
+
+    compileJava {
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_7
+    }
+
+    repositories {
+        mavenLocal()
+        //Spigot
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+        mavenCentral()
+    }
+}
+
+subprojects.each { subproject ->
+    if (subproject.name != 'core') {
+        subproject.dependencies {
+            compile project(':core')
+        }
+    }
+}
+
+jar {
+    subprojects.each { subproject ->
+        from subproject.sourceSets.main.output
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
