@@ -92,12 +92,6 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
         public void write(Entity entity, NBTCompoundTag tag) {
             net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
 
-            //If the entity is a living entity we want to set the attribute values in the compound
-            if (nmsEntity instanceof EntityLiving) {
-                EntityLiving nmsEntityLiving = (EntityLiving) nmsEntity;
-                nmsEntityLiving.a((NBTTagCompound) tag.getHandle());
-            }
-
             //Also set each of the default values for a standard entity
             nmsEntity.f((NBTTagCompound) tag.getHandle());
         }
@@ -112,12 +106,6 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
                 nmsEntity.e(oldTag);
             }
             oldTag.a((NBTTagCompound) tag.getHandle());
-
-            //If the entity is a living entity we want to set the attribute values in the compound
-            if (nmsEntity instanceof EntityLiving) {
-                EntityLiving nmsEntityLiving = (EntityLiving) nmsEntity;
-                nmsEntityLiving.a((NBTTagCompound) tag.getHandle());
-            }
 
             //Also set each of the default values for a standard entity
             nmsEntity.f((NBTTagCompound) tag.getHandle());
