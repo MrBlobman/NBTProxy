@@ -69,7 +69,7 @@ public class NBTListTag extends io.github.mrblobman.nbt.NBTListTag {
 
     @Override
     public NBTBaseTag get(int pos) {
-        NBTBase obj = nmsTag.get(pos);
+        NBTBase obj = nmsTag.g(pos);
         return NBTType.getType(obj.getTypeId()).wrapHandle(obj);
     }
 
