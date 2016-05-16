@@ -9,8 +9,13 @@ buildscript {
     }
 }
 
+//For github releases
+plugins {
+    id 'net.researchgate.release' version '2.3.4'
+}
+
 group 'io.github.mrblobman'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 apply plugin: 'maven-publish'
 
@@ -38,6 +43,7 @@ allprojects {
     }
 }
 
+//Make sure that all of the nms sub projects depend on the core
 subprojects.each { subproject ->
     if (subproject.name != 'core') {
         subproject.dependencies {
@@ -52,10 +58,25 @@ jar {
     }
 }
 
+task apiJar(type: Jar, dependsOn: [':core:classes', ':core:javadoc']) {
+    classifier = 'api'
+    from project(':core').sourceSets.main.output
+    from project(':core').sourceSets.main.allJava
+    from project(':core').javadoc.destinationDir
+}
+
+artifacts {
+    archives apiJar
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
         }
     }
+}
+
+release {
+    buildTasks = ['apiJar']
 }

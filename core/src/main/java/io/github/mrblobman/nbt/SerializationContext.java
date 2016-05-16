@@ -40,6 +40,8 @@ public class SerializationContext {
     /**
      * See: {@link NBTson.NBTsonBuilder} for creating a new {@link NBTson} instance used
      * for serialization and deserialization.
+     * @param serializers a mapping of types to their respective serializer
+     * @param deserializers a mapping of types to their respective deserializer
      */
     protected SerializationContext(Map<Class, NBTSerializer> serializers, Map<Class, NBTDeserializer> deserializers) {
         this.serializers = serializers;

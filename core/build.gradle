@@ -1,5 +1,13 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 dependencies {
     compile group: 'org.spigotmc', name: 'spigot-api', version: '+'
 }
 
 javadoc.setDestinationDir(file("../docs"))
+
+processResources {
+    filter ReplaceTokens, tokens: [
+            "version" : rootProject.version
+    ]
+}

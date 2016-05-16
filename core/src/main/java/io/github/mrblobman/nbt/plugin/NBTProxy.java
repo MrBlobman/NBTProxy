@@ -21,42 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.mrblobman.nbt;
+package io.github.mrblobman.nbt.plugin;
 
-/**
- * An NBTNumberTag wraps a number. It is one level higher than the primitive number tags
- * but it is not an actual tag type. The type of this tag depends on the tag it is wrapping.
- * If the underlying tag is a byte tag this tags type will also be a byte tag but provides
- * simple cast avoiding methods to the other primitive number types.
- * @param <T> The value returned by this tag's get method. It must be a number.
- */
-public abstract class NBTNumberTag<T extends Number> extends NBTBaseTag<T> {
+import org.bukkit.plugin.java.JavaPlugin;
 
-    protected NBTNumberTag(Object handle) {
-        super(handle);
+public class NBTProxy extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        this.getCommand("nbtproxy").setExecutor(new InfoCommand(this));
     }
 
-    public byte getByte() {
-        return get().byteValue();
-    }
+    @Override
+    public void onDisable() {
 
-    public short getShort() {
-        return get().shortValue();
-    }
-
-    public int getInt() {
-        return get().intValue();
-    }
-
-    public long getLong() {
-        return get().longValue();
-    }
-
-    public float getFloat() {
-        return get().floatValue();
-    }
-
-    public double getDouble() {
-        return get().doubleValue();
     }
 }

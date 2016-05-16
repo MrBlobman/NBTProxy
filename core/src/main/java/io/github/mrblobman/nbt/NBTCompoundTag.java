@@ -35,6 +35,7 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
 
     /**
      * See: {@link TagFactory#newCompoundTag()}
+     * @param handle the nms tag to wrap
      */
     protected NBTCompoundTag(Object handle) {
         super(handle);

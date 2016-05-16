@@ -1,0 +1,13 @@
+name: NBTProxy
+# This is replaced at build time with the appropriate version number.
+version: @version@
+description: A library used by other plugins to provide access to NBT tags.
+author: MrBlobman
+website: https://github.com/MrBlobman/NBTProxy
+main: io.github.mrblobman.nbt.plugin.NBTProxy
+
+commands:
+  nbtproxy:
+    description: Get information about the plugin.
+    aliases: [nbtlib, nbtapi]
+    usage: /<command>
