@@ -77,7 +77,32 @@ publishing {
     }
 }
 
+task updateVersionInGradleProps() {
+    File gradlePropsFile = project.file('gradle.properties')
+
+    if (!gradlePropsFile.exists())
+        gradlePropsFile.createNewFile()
+
+    Properties props = new Properties()
+
+    FileInputStream reader = new FileInputStream(gradlePropsFile)
+    try {
+        props.load(reader)
+    } finally {
+        reader.close()
+    }
+
+    props.setProperty("version", "${version}")
+
+    FileOutputStream writer = new FileOutputStream(gradlePropsFile)
+    try {
+        props.store(writer, "NBTProxy properties")
+    } finally {
+        writer.close()
+    }
+}
+commitNewVersion.dependsOn updateVersionInGradleProps
+
 release {
-    versionProperties = ["version=${version}"]
     buildTasks = ['apiJar']
 }
