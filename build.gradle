@@ -9,11 +9,6 @@ buildscript {
     }
 }
 
-//For github releases
-plugins {
-    id 'net.researchgate.release' version '2.3.4'
-}
-
 group 'io.github.mrblobman'
 version '1.0.0'
 
@@ -59,10 +54,17 @@ jar {
 }
 
 task apiJar(type: Jar, dependsOn: [':core:classes', ':core:javadoc']) {
-    classifier = 'api'
+    baseName = "${rootProject.name}-api"
+
+    //Add the sources, compilation output and javadocs for the core project
+    //to the api jar
     from project(':core').sourceSets.main.output
     from project(':core').sourceSets.main.allJava
     from project(':core').javadoc.destinationDir
+
+    //Skip the plugin additions because these are for the implementation not the api
+    exclude '**/plugin/**'
+    exclude 'plugin.yml'
 }
 
 artifacts {
@@ -71,38 +73,13 @@ artifacts {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        api(MavenPublication) {
+            artifactId "${rootProject.name}-api"
+            artifact apiJar
+        }
+
+        impl(MavenPublication) {
             from components.java
         }
     }
-}
-
-task updateVersionInGradleProps() {
-    File gradlePropsFile = project.file('gradle.properties')
-
-    if (!gradlePropsFile.exists())
-        gradlePropsFile.createNewFile()
-
-    Properties props = new Properties()
-
-    FileInputStream reader = new FileInputStream(gradlePropsFile)
-    try {
-        props.load(reader)
-    } finally {
-        reader.close()
-    }
-
-    props.setProperty("version", "${version}")
-
-    FileOutputStream writer = new FileOutputStream(gradlePropsFile)
-    try {
-        props.store(writer, "NBTProxy properties")
-    } finally {
-        writer.close()
-    }
-}
-commitNewVersion.dependsOn updateVersionInGradleProps
-
-release {
-    buildTasks = ['apiJar']
 }
