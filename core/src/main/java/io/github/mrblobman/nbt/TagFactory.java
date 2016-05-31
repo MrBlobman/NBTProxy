@@ -28,6 +28,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+
 /**
  * A TagFactory is the class that links the version independent classes to the version
  * dependent ones. It creates proxies wrapping the version dependent nms classes. These
@@ -79,6 +81,11 @@ public abstract class TagFactory {
      * @return the {@link NBTIODelegate} for {@link BlockState} IO tasks.
      */
     public abstract NBTIODelegate<BlockState> getBlockIODelegate();
+
+    /**
+     * @return the {@link NBTIODelegate} for {@link File} IO tasks.
+     */
+    public abstract NBTIODelegate<File> getFileIODelegate();
 
     /**
      * Wrap the value in a byte tag.

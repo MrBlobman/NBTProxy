@@ -36,6 +36,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.*;
+
 public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
     private final NBTIODelegate<ItemStack> itemStackNBTIODelegate = new NBTIODelegate<ItemStack>() {
         @Override
@@ -149,6 +151,48 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
         }
     };
 
+    private final NBTIODelegate<File> fileNBTIODelegate = new NBTIODelegate<File>() {
+        @Override
+        public NBTCompoundTag read(File item) {
+            FileInputStream inputStream;
+            try {
+                inputStream = new FileInputStream(item);
+            } catch (FileNotFoundException e) {
+                throw new NBTException("Error opening file input stream for "+item.getName()+".", e);
+            }
+
+            try {
+                NBTTagCompound nmsTag = NBTCompressedStreamTools.a(inputStream);
+                return new io.github.mrblobman.nbt.v1_8_R3.NBTCompoundTag(nmsTag);
+            } catch (IOException e) {
+                throw new NBTException("Error reading from file "+item.getName()+".", e);
+            }
+        }
+
+        @Override
+        public void write(File item, NBTCompoundTag tag) {
+            FileOutputStream outputStream;
+            try {
+                outputStream = new FileOutputStream(item);
+            } catch (FileNotFoundException e) {
+                throw new NBTException("Error opening file output stream for "+item.getName()+".", e);
+            }
+
+            try {
+                NBTCompressedStreamTools.a((NBTTagCompound) tag.getHandle(), outputStream);
+            } catch (IOException e) {
+                throw new NBTException("Error writing to file "+item.getName()+".", e);
+            }
+        }
+
+        @Override
+        public void append(File item, NBTCompoundTag tag) {
+            NBTCompoundTag existing = read(item);
+            existing.putAll(tag);
+            write(item, existing);
+        }
+    };
+
     @Override
     public NBTIODelegate<ItemStack> getItemIODelegate() {
         return itemStackNBTIODelegate;
@@ -162,6 +206,11 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
     @Override
     public NBTIODelegate<BlockState> getBlockIODelegate() {
         return blockNBTIODelegate;
+    }
+
+    @Override
+    public NBTIODelegate<File> getFileIODelegate() {
+        return fileNBTIODelegate;
     }
 
     @Override
