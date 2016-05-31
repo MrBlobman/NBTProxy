@@ -74,6 +74,12 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
     public abstract NBTBaseTag getTag(String key);
 
     /**
+     * Remove the mapping for the given key.
+     * @param key the key of the mapping to remove from this tag.
+     */
+    public abstract void remove(String key);
+
+    /**
      * Check if the key is a mapping to a non-null value in this map.
      * @param key the key who's existence is being checked
      * @return true if the key exists in the map and {@link #getTag(String)}

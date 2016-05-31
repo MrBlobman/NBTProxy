@@ -70,6 +70,11 @@ public class NBTCompoundTag extends io.github.mrblobman.nbt.NBTCompoundTag {
     }
 
     @Override
+    public void remove(String key) {
+        this.nmsTag.remove(key);
+    }
+
+    @Override
     public boolean hasKey(String key) {
         return this.nmsTag.hasKey(key);
     }
