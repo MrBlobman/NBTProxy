@@ -75,6 +75,7 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
 
     /**
      * Remove the mapping for the given key.
+     * <b>Remove UUID tags with:</b> {@link #removeUUID(String)}.
      * @param key the key of the mapping to remove from this tag.
      */
     public abstract void remove(String key);
@@ -443,5 +444,16 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
      */
     public boolean hasKeyOfUUID(String key) {
         return hasKeyOfType(key + "Most", NBTType.LONG) && hasKeyOfType(key + "Least", NBTType.LONG);
+    }
+
+    /**
+     * Remove the mapping for a UUID key. UUIDs are stored as 2
+     * longs and so removal must remove multiple tags. Regular tag
+     * removal can be accomplished with {@link #remove(String)}.
+     * @param key the key of the mapping to remove from this tag.
+     */
+    public void removeUUID(String key) {
+        remove(key + "Most");
+        remove(key + "Least");
     }
 }

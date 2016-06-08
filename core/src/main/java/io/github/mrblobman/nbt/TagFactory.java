@@ -83,6 +83,9 @@ public abstract class TagFactory {
     public abstract NBTIODelegate<BlockState> getBlockIODelegate();
 
     /**
+     * Warning: Reading an empty tag will throw an exception. You should put
+     * something in the tag before saving it or skip the save if there is no
+     * data to write.
      * @return the {@link NBTIODelegate} for {@link File} IO tasks.
      */
     public abstract NBTIODelegate<File> getFileIODelegate();
