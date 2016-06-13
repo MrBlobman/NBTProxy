@@ -1,5 +1,6 @@
 rootProject.name = 'NBTProxy'
 include 'core'
+include 'v1_10_R1'
 include 'v1_9_R2'
 include 'v1_9_R1'
 include 'v1_8_R3'

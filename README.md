@@ -18,14 +18,14 @@ There are 2 options:
    Then add a gradle or maven dependency with the following:
        Gradle:
        ```gradle
-          compile group: 'io.github.mrblobman', name: 'NBTProxy-api', version: '1.2.0'
+          compile group: 'io.github.mrblobman', name: 'NBTProxy-api', version: '1.3.0'
        ```
        Maven:
        ```xml
        <dependency>
            <groupId>io.github.mrblobman</groupId>
            <artifactId>NBTProxy-api</artifactId>
-           <version>1.2.0</version>
+           <version>1.3.0</version>
            <scope>provided</scope>
        </dependency>
        ```
