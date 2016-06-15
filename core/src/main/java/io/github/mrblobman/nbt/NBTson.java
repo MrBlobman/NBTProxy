@@ -114,6 +114,12 @@ public class NBTson {
             return this;
         }
 
+        public <T, U extends NBTSerializer<T> & NBTDeserializer<T>> NBTsonBuilder register(Class<T> type, U serializer) {
+            serializers.put(type, serializer);
+            deserializers.put(type, serializer);
+            return this;
+        }
+
         public NBTsonBuilder setItemIODelegate(NBTIODelegate<ItemStack> itemIODelegate) {
             this.itemIODelegate = itemIODelegate;
             return this;
