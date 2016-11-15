@@ -23,10 +23,8 @@
  */
 package io.github.mrblobman.nbt.v1_8_R3;
 
-import io.github.mrblobman.nbt.NBTBaseTag;
+import io.github.mrblobman.nbt.*;
 import io.github.mrblobman.nbt.NBTCompoundTag;
-import io.github.mrblobman.nbt.NBTException;
-import io.github.mrblobman.nbt.NBTIODelegate;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_8_R3.block.CraftBlockState;
@@ -211,6 +209,15 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
     @Override
     public NBTIODelegate<File> getFileIODelegate() {
         return fileNBTIODelegate;
+    }
+
+    @Override
+    public NBTCompoundTag parse(String serialized) throws NBTException {
+        try {
+            return new io.github.mrblobman.nbt.v1_8_R3.NBTCompoundTag(MojangsonParser.parse(serialized));
+        } catch (MojangsonParseException e) {
+            throw new NBTException("Error parsing", e);
+        }
     }
 
     @Override

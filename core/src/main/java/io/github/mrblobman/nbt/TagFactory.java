@@ -91,6 +91,22 @@ public abstract class TagFactory {
     public abstract NBTIODelegate<File> getFileIODelegate();
 
     /**
+     * Parse the serialized form of the tag and try to build its
+     * data representation. This is useful for obtaining NBT tags as
+     * command line arguments.
+     * The NBTTag grammar is as follows:
+     * <pre>
+     *     nbt_tag := '{' '}'
+     *     TODO specify this grammar
+     * </pre>
+     * @param serialized the string representation of the tag
+     * @return the compound tag represented by the serialized representation
+     * @throws NBTException if the string cannot be parsed. The cause of
+     * the exception is the underlying parse exception.
+     */
+    public abstract NBTCompoundTag parse(String serialized) throws NBTException;
+
+    /**
      * Wrap the value in a byte tag.
      * @param value the value to wrap
      * @return a new byte tag with the given value

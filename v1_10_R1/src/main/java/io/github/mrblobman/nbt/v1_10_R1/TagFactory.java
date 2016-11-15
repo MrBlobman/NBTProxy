@@ -215,6 +215,15 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
     }
 
     @Override
+    public NBTCompoundTag parse(String serialized) throws NBTException {
+        try {
+            return new io.github.mrblobman.nbt.v1_10_R1.NBTCompoundTag(MojangsonParser.parse(serialized));
+        } catch (MojangsonParseException e) {
+            throw new NBTException("Error parsing", e);
+        }
+    }
+
+    @Override
     public NBTBaseTag<Byte> newByteTag(byte value) {
         return new NBTByteTag(value);
     }
