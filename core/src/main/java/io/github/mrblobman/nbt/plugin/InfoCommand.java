@@ -24,10 +24,7 @@
 package io.github.mrblobman.nbt.plugin;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,36 +35,38 @@ import org.bukkit.plugin.PluginDescriptionFile;
  * A command that display information about the plugin to the sender.
  */
 public class InfoCommand implements CommandExecutor {
-    private NBTProxy plugin;
-    private HoverEvent clickToCopyToolTip;
+    private final String[] infoMsg;
+    private final BaseComponent[] infoMsgPretty;
 
-    public InfoCommand(NBTProxy plugin) {
-        this.plugin = plugin;
-        this.clickToCopyToolTip = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.AQUA + "Click to paste the version into your chatbox."));
+    public InfoCommand(PluginDescriptionFile pdf) {
+        this.infoMsg = new String[] {
+                ChatColor.AQUA + "NBTProxy Info:",
+                ChatColor.AQUA + "  Description: " + ChatColor.YELLOW + pdf.getDescription(),
+                ChatColor.AQUA + "  Version: " + ChatColor.YELLOW + pdf.getVersion(),
+                ChatColor.AQUA + "  Authors: " + ChatColor.YELLOW + pdf.getAuthors(),
+                ChatColor.AQUA + "  Website: " + ChatColor.YELLOW + pdf.getWebsite()
+        };
+        HoverEvent clickToCopyToolTip = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(ChatColor.AQUA + "Click to paste the version into your chatbox."));
+        ComponentBuilder msg = new ComponentBuilder("\nNBTProxy Info:\n").color(ChatColor.AQUA);
+        appendInfoString(msg, clickToCopyToolTip, "Description", pdf.getDescription());
+        appendInfoString(msg, clickToCopyToolTip, "Version", pdf.getVersion());
+        appendInfoString(msg, clickToCopyToolTip, "Authors", pdf.getAuthors().toString());
+        appendInfoString(msg, clickToCopyToolTip, "Website", pdf.getWebsite());
+        this.infoMsgPretty = msg.create();
     }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        PluginDescriptionFile pdf = plugin.getDescription();
         if (commandSender instanceof Player) {
-            //We will build a nice message instead of the plain text
-            ComponentBuilder msg = new ComponentBuilder("\nNBTProxy Info:\n").color(ChatColor.AQUA);
-            appendInfoString(msg, "Description", pdf.getDescription());
-            appendInfoString(msg, "Version", pdf.getVersion());
-            appendInfoString(msg, "Authors", pdf.getAuthors().toString());
-            appendInfoString(msg, "Website", pdf.getWebsite());
-            ((Player) commandSender).spigot().sendMessage(msg.create());
+            //We will use a nice message instead of the plain text
+            ((Player) commandSender).spigot().sendMessage(infoMsgPretty);
         } else {
-            commandSender.sendMessage(ChatColor.AQUA + "NBTProxy Info:");
-            commandSender.sendMessage(ChatColor.AQUA + "  Description: " + ChatColor.YELLOW + pdf.getDescription());
-            commandSender.sendMessage(ChatColor.AQUA + "  Version: " + ChatColor.YELLOW + pdf.getVersion());
-            commandSender.sendMessage(ChatColor.AQUA + "  Authors: " + ChatColor.YELLOW + pdf.getAuthors());
-            commandSender.sendMessage(ChatColor.AQUA + "  Website: " + ChatColor.YELLOW + pdf.getWebsite());
+            commandSender.sendMessage(infoMsg);
         }
         return true;
     }
 
-    private void appendInfoString(ComponentBuilder msg, String label, String value) {
+    private static void appendInfoString(ComponentBuilder msg, HoverEvent clickToCopyToolTip, String label, String value) {
         msg.append("  " + label + ": ").color(ChatColor.AQUA);
         msg.append(value + "\n").color(ChatColor.YELLOW);
         msg.event(clickToCopyToolTip);

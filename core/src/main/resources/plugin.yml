@@ -11,3 +11,31 @@ commands:
     description: Get information about the plugin.
     aliases: [nbtlib, nbtapi]
     usage: /<command>
+  nbt:
+    description: Interact with nbt tags from various sources.
+    usage: /<command> query_type type [nbt_data...]
+
+permissions:
+  nbtproxy.*:
+    description: Gives access to all nbt read commands (get).
+    default: op
+    children:
+      nbtproxy.get.*: true
+
+  nbtproxy.read.*:
+    description: Gives access to all nbt read commands (get).
+    default: op
+    children:
+      nbtproxy.read.item: true
+      nbtproxy.read.block: true
+      nbtproxy.read.entity: true
+      nbtproxy.read.file: true
+
+  nbtproxy.write.*:
+    description: Gives access to all nbt write commands (set | add).
+    default: false
+    children:
+      nbtproxy.write.item: true
+      nbtproxy.write.block: true
+      nbtproxy.write.entity: true
+      nbtproxy.write.file: true

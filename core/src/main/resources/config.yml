@@ -1,0 +1,14 @@
+# These commands can be dangerous but also very useful. By default they are all disabled
+# to prevent un-aware server owners from having them active on their server. This is an
+# extra percaution ontop of the regular permissions.
+enabled-commands:
+  read:
+    item: false
+    block: false
+    entity: false
+    file: false
+  write:
+    item: false
+    block: false
+    entity: false
+    file: false

@@ -41,6 +41,34 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
         super(handle);
     }
 
+    public final String prettyPrint() {
+        StringBuilder out = new StringBuilder("{\n");
+        this.prettyPrint(out, 0);
+        out.append("\n}");
+
+        return out.toString();
+    }
+
+    private void prettyPrint(StringBuilder out, int tabDepth) {
+        boolean isFirst = true;
+        for (String key : this.keys()) {
+            NBTBaseTag tag = getTag(key);
+
+            for (int i = 0; i < tabDepth; i++) out.append("  ");
+            if (isFirst) {
+                isFirst = false;
+                out.append(",\n");
+            }
+            out.append('"').append(key).append(": ");
+
+            if (tag.isCompound()) {
+                ((NBTCompoundTag) tag).prettyPrint(out, tabDepth + 1);
+            } else {
+                out.append(tag.toString());
+            }
+        }
+    }
+
     /**
      * Put a new mapping into this tag.
      * @param key the key of the mapping that can be used later to retrieve the
