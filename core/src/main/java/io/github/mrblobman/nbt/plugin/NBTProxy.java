@@ -64,6 +64,7 @@ public class NBTProxy extends JavaPlugin {
          * Required for executing:
          * <ul>
          *     <li>{@code /nbt set item} &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt write item} &lt;nbt-data&gt;</li>
          *     <li>{@code /nbt add item} &lt;nbt-data&gt;</li>
          * </ul>
          */
@@ -72,6 +73,7 @@ public class NBTProxy extends JavaPlugin {
          * Required for executing:
          * <ul>
          *     <li>{@code /nbt set block} &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt write block} &lt;nbt-data&gt;</li>
          *     <li>{@code /nbt add block} &lt;nbt-data&gt;</li>
          * </ul>
          */
@@ -80,8 +82,10 @@ public class NBTProxy extends JavaPlugin {
          * Required for executing:
          * <ul>
          *     <li>{@code /nbt set entity} &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt write entity} &lt;nbt-data&gt;</li>
          *     <li>{@code /nbt add entity} &lt;nbt-data&gt;</li>
-         *     <li>{@code /nbt add player} &lt;name&gt; &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt set player} &lt;name&gt; &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt write player} &lt;name&gt; &lt;nbt-data&gt;</li>
          *     <li>{@code /nbt add player} &lt;name&gt; &lt;nbt-data&gt;</li>
          * </ul>
          */
@@ -89,7 +93,8 @@ public class NBTProxy extends JavaPlugin {
         /**
          * Required for executing:
          * <ul>
-         *     <li>{@code /nbt add file} &lt;path&gt; &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt set file} &lt;path&gt; &lt;nbt-data&gt;</li>
+         *     <li>{@code /nbt write file} &lt;path&gt; &lt;nbt-data&gt;</li>
          *     <li>{@code /nbt add file} &lt;path&gt; &lt;nbt-data&gt;</li>
          * </ul>
          */
@@ -118,8 +123,8 @@ public class NBTProxy extends JavaPlugin {
 
         /**
          * Lookup a permission based on the {@code queryType} and {@code queryTarget}
-         * @param queryType the type of the query. One of {@code get}, {@code set}, and
-         *                  {@code add}
+         * @param queryType the type of the query. One of {@code get}, {@code read},
+         *                  {@code set}, {@code write}, and {@code add}
          * @param queryTarget the target of the query. One of {@code item}, {@code block},
          *                    {@code entity}, and {@code file}
          * @return the associated {@link Permissions permission} or {@code null} if and
@@ -129,9 +134,11 @@ public class NBTProxy extends JavaPlugin {
             boolean isRead;
             switch (queryType) {
                 case "get":
+                case "read":
                     isRead = true;
                     break;
                 case "set":
+                case "write":
                 case "add":
                     isRead = false;
                     break;
@@ -168,10 +175,5 @@ public class NBTProxy extends JavaPlugin {
         }
 
         this.getCommand("nbt").setExecutor(new NBTCommand(enabledCommands));
-    }
-
-    @Override
-    public void onDisable() {
-
     }
 }

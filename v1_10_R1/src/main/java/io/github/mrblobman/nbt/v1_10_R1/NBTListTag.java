@@ -34,11 +34,13 @@ public class NBTListTag extends io.github.mrblobman.nbt.NBTListTag {
     public NBTListTag() {
         super(new NBTTagList());
         this.nmsTag = (NBTTagList) super.getHandle();
+        super.valueType = nmsTag.g();
     }
 
     public NBTListTag(NBTTagList handle) {
         super(handle);
         this.nmsTag = (NBTTagList) super.getHandle();
+        super.valueType = nmsTag.g();
     }
 
     @Override

@@ -23,8 +23,7 @@
  */
 package io.github.mrblobman.nbt;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * An NBTCompoundTag is a mapping of String -&gt; NBTBaseTag. It is a special
@@ -47,31 +46,48 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
      * @return the pretty printed tag
      */
     public final String prettyPrint() {
-        StringBuilder out = new StringBuilder("{\n");
+        StringBuilder out = new StringBuilder();
         this.prettyPrint(out, 0);
-        out.append("\n}");
 
         return out.toString();
     }
 
+    private static StringBuilder indent(StringBuilder out, int tabDepth) {
+        for (int i = 0; i < tabDepth; i++) out.append("  ");
+        return out;
+    }
+
     private void prettyPrint(StringBuilder out, int tabDepth) {
-        boolean isFirst = true;
-        for (String key : this.keys()) {
+        out.append("{\n");
+
+        Set<String> keys = this.keys();
+        String[] sortedKeys = keys.toArray(new String[keys.size()]);
+        Arrays.sort(sortedKeys, new Comparator<String>() {
+            @Override
+            public int compare(String s, String str) {
+                return s.compareToIgnoreCase(str);
+            }
+        });
+        for (int i = 0; i < sortedKeys.length; i++) {
+            String key = sortedKeys[i];
             NBTBaseTag tag = getTag(key);
 
-            for (int i = 0; i < tabDepth; i++) out.append("  ");
-            if (isFirst) {
-                isFirst = false;
-                out.append(",\n");
-            }
-            out.append('"').append(key).append(": ");
+            indent(out, tabDepth + 1)
+                    .append('\'').append(key).append('\'')
+                    .append(": ");
 
             if (tag.isCompound()) {
                 ((NBTCompoundTag) tag).prettyPrint(out, tabDepth + 1);
             } else {
                 out.append(tag.toString());
             }
+
+            if (i + 1 < sortedKeys.length) out.append(",\n");
+            else                           out.append("\n");
         }
+
+        indent(out, tabDepth)
+                .append("}");
     }
 
     /**

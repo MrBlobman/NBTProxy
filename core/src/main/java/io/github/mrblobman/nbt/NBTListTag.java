@@ -29,11 +29,10 @@ package io.github.mrblobman.nbt;
  * is itself. The value is determined
  */
 public abstract class NBTListTag extends NBTBaseTag<NBTListTag> {
-    private int valueType = 0;
+    protected int valueType = 0;
 
     protected NBTListTag(Object handle) {
         super(handle);
-        if (!isEmpty()) this.valueType = get(0).type().ID;
     }
 
     /**

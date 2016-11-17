@@ -121,9 +121,9 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
             CraftBlockState craftState = (CraftBlockState) blockState;
             TileEntity nmsBlock = craftState.getTileEntity();
             if (nmsBlock == null)
-                throw new NBTException("Given block (" + blockState + ") is not a tile entity and does not have an NBT tag.");
+                throw new NBTException("Given block is not a tile entity and does not have an NBT tag.");
 
-            NBTCompoundTag tag =  new io.github.mrblobman.nbt.v1_9_R2.NBTCompoundTag();
+            NBTCompoundTag tag = new io.github.mrblobman.nbt.v1_9_R2.NBTCompoundTag();
             nmsBlock.save((NBTTagCompound) tag.getHandle());
             return tag;
         }
@@ -133,7 +133,7 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
             CraftBlockState craftState = (CraftBlockState) blockState;
             TileEntity nmsBlock = craftState.getTileEntity();
             if (nmsBlock == null)
-                throw new NBTException("Given block (" + blockState + ") is not a tile entity and does not have an NBT tag.");
+                throw new NBTException("Given block is not a tile entity and does not have an NBT tag.");
 
             nmsBlock.a((NBTTagCompound) tag.getHandle());
         }
@@ -143,9 +143,9 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
             CraftBlockState craftState = (CraftBlockState) blockState;
             TileEntity nmsBlock = craftState.getTileEntity();
             if (nmsBlock == null)
-                throw new NBTException("Given block (" + blockState + ") is not a tile entity and does not have an NBT tag.");
+                throw new NBTException("Given block is not a tile entity and does not have an NBT tag.");
 
-            NBTCompoundTag oldTag =  new io.github.mrblobman.nbt.v1_9_R2.NBTCompoundTag();
+            NBTCompoundTag oldTag = new io.github.mrblobman.nbt.v1_9_R2.NBTCompoundTag();
             nmsBlock.save((NBTTagCompound) tag.getHandle());
             oldTag.putAll(tag);
             nmsBlock.a((NBTTagCompound) oldTag.getHandle());
@@ -159,14 +159,14 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
             try {
                 inputStream = new FileInputStream(item);
             } catch (FileNotFoundException e) {
-                throw new NBTException("Error opening file input stream for "+item.getName()+".", e);
+                throw new NBTException("Error opening file input stream for " + item.getName() + ".", e);
             }
 
             try {
                 NBTTagCompound nmsTag = NBTCompressedStreamTools.a(inputStream);
                 return new io.github.mrblobman.nbt.v1_9_R2.NBTCompoundTag(nmsTag);
             } catch (IOException e) {
-                throw new NBTException("Error reading from file "+item.getName()+".", e);
+                throw new NBTException("Error reading from file " + item.getName() + ".", e);
             }
         }
 
@@ -176,13 +176,13 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
             try {
                 outputStream = new FileOutputStream(item);
             } catch (FileNotFoundException e) {
-                throw new NBTException("Error opening file output stream for "+item.getName()+".", e);
+                throw new NBTException("Error opening file output stream for " + item.getName() + ".", e);
             }
 
             try {
                 NBTCompressedStreamTools.a((NBTTagCompound) tag.getHandle(), outputStream);
             } catch (IOException e) {
-                throw new NBTException("Error writing to file "+item.getName()+".", e);
+                throw new NBTException("Error writing to file " + item.getName() + ".", e);
             }
         }
 

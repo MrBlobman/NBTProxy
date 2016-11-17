@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,7 +52,7 @@ import java.util.Set;
  * Argument grammar:
  * <pre>
  *     nbt_query := query_type query_target;
- *     query_type := 'get' | 'set' nbt_data | 'add' nbt_data;
+ *     query_type := ('get' | 'read') | ('set' | 'write') nbt_data | 'add' nbt_data;
  *     query_target := 'item' | 'block' | 'entity' | 'player' name | 'file' path;
  * </pre>
  */
@@ -112,14 +113,17 @@ public class NBTCommand implements CommandExecutor {
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {
                 case "get":
+                case "read":
                 case "set":
+                case "write":
                 case "add":
                     handleQueryType(args[0].toLowerCase(), sender, args);
+                    break;
                 default:
-                    printError(sender, "Invalid query type \"" + args[0] + "\". Expected ('get' | 'set' | 'add')");
+                    printError(sender, "Invalid query type \"" + args[0] + "\". Expected ('get' | 'read' | 'set' | 'write' | 'add')");
             }
         } else {
-            printError(sender, "Missing query type. ('get' | 'set' | 'add')");
+            printError(sender, "Missing query type. ('get' | 'read' | 'set' | 'write' | 'add')");
         }
     }
 
@@ -130,7 +134,7 @@ public class NBTCommand implements CommandExecutor {
                     if (!checkPermission(sender, NBTProxy.Permissions.get(queryType, "item"))) return;
                     if (sender instanceof Player) {
                         ItemStack item = ((Player) sender).getItemInHand();
-                        if (item == null) {
+                        if (item == null || item.getType() == Material.AIR) {
                             printError(sender, "You are not holding an item");
                         } else {
                             try {
@@ -147,11 +151,14 @@ public class NBTCommand implements CommandExecutor {
                     if (!checkPermission(sender, NBTProxy.Permissions.get(queryType, "block"))) return;
                     if (sender instanceof Player) {
                         Block block = ((Player) sender).getTargetBlock((Set<Material>) null, 10);
+                        BlockState state;
                         if (block == null) {
                             printError(sender, "You are not looking at a block");
+                        } else if ((state = block.getState()) == null) {
+                            printError(sender, "Cannot get block state of the block you are looking at");
                         } else {
                             try {
-                                executeQuery(queryType, this.tagFactory.getBlockIODelegate(), block.getState(), 2, sender, args);
+                                executeQuery(queryType, this.tagFactory.getBlockIODelegate(), state, 2, sender, args);
                             } catch (NBTException e) {
                                 printError(sender, e.getMessage());
                             }
@@ -252,20 +259,22 @@ public class NBTCommand implements CommandExecutor {
     private <T> void executeQuery(String queryType, NBTIODelegate<T> nbtioDelegate, T target, int nbtDataIndex, CommandSender sender, String[] args) {
         switch (queryType) {
             case "get":
+            case "read":
                 String tag = nbtioDelegate.read(target).prettyPrint();
-                printSuccess(sender, "Read:\n" + tag);
+                printSuccess(sender, "Read\n" + tag);
                 break;
             case "set":
+            case "write":
                 NBTCompoundTag data = getData(nbtDataIndex, sender, args);
                 if (data == null) return;
                 nbtioDelegate.write(target, data);
-                printSuccess(sender, "Wrote:\n" + data.prettyPrint());
+                printSuccess(sender, "Wrote\n" + data.prettyPrint());
                 break;
             case "add":
                 data = getData(nbtDataIndex, sender, args);
                 if (data == null) return;
                 nbtioDelegate.append(target, data);
-                printSuccess(sender, "Appended:\n" + data.prettyPrint());
+                printSuccess(sender, "Appended\n" + data.prettyPrint());
                 break;
         }
     }
