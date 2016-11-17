@@ -41,6 +41,11 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
         super(handle);
     }
 
+    /**
+     * Print this tag with newline and tabs for an easier to read
+     * string for a human.
+     * @return the pretty printed tag
+     */
     public final String prettyPrint() {
         StringBuilder out = new StringBuilder("{\n");
         this.prettyPrint(out, 0);
@@ -127,11 +132,15 @@ public abstract class NBTCompoundTag extends NBTBaseTag<NBTCompoundTag> {
     public abstract boolean hasKeyOfType(String key, NBTType type);
 
     /**
+     * Get the number of tags inside this tag. This only counts tags
+     * that are one level deep (doesn't count the size of compound children).
      * @return the number of mappings that exist in this map.
      */
     public abstract int size();
 
     /**
+     * Get a {@link Set} containing the names of all of the named tags inside
+     * this tag.
      * @return a set containing all of the keys that exist in this map
      */
     public abstract Set<String> keys();

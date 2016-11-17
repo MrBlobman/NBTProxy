@@ -65,6 +65,7 @@ task apiJar(type: Jar, dependsOn: [':core:classes', ':core:javadoc']) {
     //Skip the plugin additions because these are for the implementation not the api
     exclude '**/plugin/**'
     exclude 'plugin.yml'
+    exclude 'config.yml'
 }
 
 artifacts {

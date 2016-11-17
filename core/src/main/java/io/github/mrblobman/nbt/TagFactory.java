@@ -96,10 +96,29 @@ public abstract class TagFactory {
      * command line arguments.
      * The NBTTag grammar is as follows:
      * <pre>
-     *     nbt_tag := '{' '}'
-     *     TODO specify this grammar
+     *     nbt_tag := nbt_compound | nbt_list | nbt_primitive ;
+     *
+     *     nbt_compound := '{' (named_tag (',' named_tag)*)? '}' ;
+     *     named_tag := [^:]* ':' nbt_tag ;
+     *
+     *     nbt_list := '[' (nbt_tag (',' nbt_tag)*)? ']' ;
+     *
+     *     nbt_primitive := nbt_double | nbt_float | nbt_byte | nbt_long |
+     *                      nbt_short | nbt_int | nbt_string | nbt_int_array ;
+     *     nbt_double := float ('d' | 'D')? ;
+     *     nbt_float := float ('f' | 'F') ;
+     *     nbt_byte := int ('b' | 'B') | 'true' | 'false' ;
+     *     nbt_long := int ('l' | 'L') ;
+     *     nbt_short := int ('s' | 'S') ;
+     *     nbt_int :=  int ;
+     *     nbt_string := '"' ([^"] | '\"' | '\\')* '"' ;
+     *     nbt_int_array := '[' (int (',' int)*)? ']' ;
+     *
+     *     digit := [0-9] ;
+     *     float := [-+]? digit* '.'? digit+ ;
+     *     int := [-+]? digit+ ;
      * </pre>
-     * @param serialized the string representation of the tag
+     * @param serialized the string representation of the compound tag
      * @return the compound tag represented by the serialized representation
      * @throws NBTException if the string cannot be parsed. The cause of
      * the exception is the underlying parse exception.

@@ -50,9 +50,9 @@ import java.util.Set;
  * <br>
  * Argument grammar:
  * <pre>
- *     nbt_query := query_type query_target
- *     query_type := 'get' | 'set' nbt_data | 'add' nbt_data.
- *     query_target := 'item' | 'block' | 'entity' | 'player' name | 'file' path.
+ *     nbt_query := query_type query_target;
+ *     query_type := 'get' | 'set' nbt_data | 'add' nbt_data;
+ *     query_target := 'item' | 'block' | 'entity' | 'player' name | 'file' path;
  * </pre>
  */
 public class NBTCommand implements CommandExecutor {
@@ -260,11 +260,13 @@ public class NBTCommand implements CommandExecutor {
                 if (data == null) return;
                 nbtioDelegate.write(target, data);
                 printSuccess(sender, "Wrote:\n" + data.prettyPrint());
+                break;
             case "add":
                 data = getData(nbtDataIndex, sender, args);
                 if (data == null) return;
                 nbtioDelegate.append(target, data);
                 printSuccess(sender, "Appended:\n" + data.prettyPrint());
+                break;
         }
     }
 }

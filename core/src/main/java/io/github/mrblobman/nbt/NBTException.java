@@ -23,6 +23,9 @@
  */
 package io.github.mrblobman.nbt;
 
+/**
+ * The base exception for NBT related exceptions.
+ */
 public class NBTException extends RuntimeException {
 
     public NBTException() {

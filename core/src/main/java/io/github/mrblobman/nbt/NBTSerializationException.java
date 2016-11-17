@@ -24,7 +24,8 @@
 package io.github.mrblobman.nbt;
 
 /**
- * Created on 2016-04-26.
+ * An exception raised when an error is encountered during serialization
+ * from an object to a NBTBaseTag.
  */
 public class NBTSerializationException extends NBTException {
     public NBTSerializationException() {

@@ -4,7 +4,10 @@ dependencies {
     compile group: 'org.spigotmc', name: 'spigot-api', version: '+'
 }
 
-javadoc.setDestinationDir(file("../docs"))
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PUBLIC;
+    options.destinationDirectory = file("../docs");
+}
 
 processResources {
     filter ReplaceTokens, tokens: [

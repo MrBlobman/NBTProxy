@@ -26,7 +26,8 @@ package io.github.mrblobman.nbt;
 import java.io.PrintStream;
 
 /**
- * Created on 2016-04-26.
+ * An exception raised when an error is encountered during deserialization
+ * from an NBTBaseTag to an object.
  */
 public class NBTDeserializationException extends NBTException {
     private NBTBaseTag tag;
@@ -51,6 +52,11 @@ public class NBTDeserializationException extends NBTException {
         this.tag = tag;
     }
 
+    /**
+     * Get the tag who's deserialization resulted in this exception being
+     * thrown.
+     * @return the problematic tag
+     */
     public NBTBaseTag getTag() {
         return this.tag;
     }

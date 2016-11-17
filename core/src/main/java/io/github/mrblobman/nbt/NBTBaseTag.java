@@ -32,8 +32,7 @@ public abstract class NBTBaseTag<T> {
     private Object handle;
 
     protected NBTBaseTag(Object handle) {
-        Objects.requireNonNull(handle, "Cannot wrap a null handle.");
-        this.handle = handle;
+        this.handle = Objects.requireNonNull(handle, "Cannot wrap a null handle.");
     }
 
     /**
