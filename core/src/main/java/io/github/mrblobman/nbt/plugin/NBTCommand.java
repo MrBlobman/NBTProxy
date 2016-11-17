@@ -23,10 +23,7 @@
  */
 package io.github.mrblobman.nbt.plugin;
 
-import io.github.mrblobman.nbt.NBTCompoundTag;
-import io.github.mrblobman.nbt.NBTException;
-import io.github.mrblobman.nbt.NBTIODelegate;
-import io.github.mrblobman.nbt.TagFactory;
+import io.github.mrblobman.nbt.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -41,8 +38,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Provide command access to all of the {@link NBTIODelegate}s. Each command must
@@ -52,7 +51,7 @@ import java.util.Set;
  * Argument grammar:
  * <pre>
  *     nbt_query := query_type query_target;
- *     query_type := ('get' | 'read') | ('set' | 'write') nbt_data | 'add' nbt_data;
+ *     query_type := ('get' | 'read') path? | ('set' | 'write') nbt_data | 'add' nbt_data;
  *     query_target := 'item' | 'block' | 'entity' | 'player' name | 'file' path;
  * </pre>
  */
@@ -243,7 +242,7 @@ public class NBTCommand implements CommandExecutor {
             for (int i = index; i < args.length; i++)
                 rawData.append(args[i]).append(' ');
 
-            String data = rawData.toString();
+            String data = rawData.toString().trim();
             try {
                 return this.tagFactory.parse(data);
             } catch (NBTException e) {
@@ -256,22 +255,66 @@ public class NBTCommand implements CommandExecutor {
         }
     }
 
-    private <T> void executeQuery(String queryType, NBTIODelegate<T> nbtioDelegate, T target, int nbtDataIndex, CommandSender sender, String[] args) {
+    private static final String[] EMPTY_PATH = new String[0];
+    private static final Pattern DOT_SPLITTER = Pattern.compile("\\.");
+    private String[] getReadPath(int index, String[] args) {
+        if (args.length > index) {
+            StringBuilder rawData = new StringBuilder();
+            for (int i = index; i < args.length; i++)
+                rawData.append(args[i]).append(' ');
+
+            return DOT_SPLITTER.split(rawData.toString().trim());
+        } else {
+            return EMPTY_PATH;
+        }
+    }
+
+    private <T> void executeQuery(String queryType, NBTIODelegate<T> nbtioDelegate, T target, int typeDataIndex, CommandSender sender, String[] args) {
         switch (queryType) {
             case "get":
             case "read":
-                String tag = nbtioDelegate.read(target).prettyPrint();
-                printSuccess(sender, "Read\n" + tag);
+                String[] readPath = getReadPath(typeDataIndex, args);
+                NBTBaseTag tag = nbtioDelegate.read(target);
+                for (String readPathSegment : readPath) {
+                    if (tag == null) {
+                        printError(sender, "Path " + Arrays.toString(readPath) + " encounters the end of a path and can't read '" + readPathSegment + "'.");
+                        return;
+                    } else if (tag.isCompound()) {
+                        tag = ((NBTCompoundTag) tag).getTag(readPathSegment);
+                    } else if (tag.type().isList()) {
+                        int index;
+                        try {
+                            index = Integer.parseInt(readPathSegment);
+                        } catch (NumberFormatException e) {
+                            printError(sender, "Path " + Arrays.toString(readPath) + " encounters a list but '" + readPathSegment + "' is not a number.");
+                            return;
+                        }
+                        try {
+                            tag = ((NBTListTag) tag).get(index);
+                        } catch (IndexOutOfBoundsException e) {
+                            printError(sender, "Path " + Arrays.toString(readPath) + " encounters a list but '" + readPathSegment + "' is not an element in that list.");
+                            return;
+                        }
+                    } else {
+                        printError(sender, "Path " + Arrays.toString(readPath) + " encounters a " + NBTType.getName(tag.type().ID) + " and can't read '" + readPathSegment + "' from it.");
+                        return;
+                    }
+                }
+                if (tag == null) {
+                    printError(sender, "Path " + Arrays.toString(readPath) + " does not lead anywhere.");
+                    return;
+                }
+                printSuccess(sender, "Read\n" + (tag.isCompound() ? ((NBTCompoundTag) tag).prettyPrint() : tag.toString()));
                 break;
             case "set":
             case "write":
-                NBTCompoundTag data = getData(nbtDataIndex, sender, args);
+                NBTCompoundTag data = getData(typeDataIndex, sender, args);
                 if (data == null) return;
                 nbtioDelegate.write(target, data);
                 printSuccess(sender, "Wrote\n" + data.prettyPrint());
                 break;
             case "add":
-                data = getData(nbtDataIndex, sender, args);
+                data = getData(typeDataIndex, sender, args);
                 if (data == null) return;
                 nbtioDelegate.append(target, data);
                 printSuccess(sender, "Appended\n" + data.prettyPrint());

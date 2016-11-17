@@ -71,6 +71,7 @@ public class NBTListTag extends io.github.mrblobman.nbt.NBTListTag {
 
     @Override
     public NBTBaseTag get(int pos) {
+        if (pos >= size()) return null;
         NBTBase obj = nmsTag.g(pos);
         return NBTType.getType(obj.getTypeId()).wrapHandle(obj);
     }
