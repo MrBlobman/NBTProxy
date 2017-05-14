@@ -17,18 +17,18 @@ There are 2 options:
    ```
    Then add a gradle or maven dependency with the following:
        Gradle:
-       ```gradle
-          compile group: 'io.github.mrblobman', name: 'NBTProxy-api', version: '2.0.0'
-       ```
+   ```gradle
+   compile group: 'io.github.mrblobman', name: 'NBTProxy-api', version: '2.1.0'
+   ```
        Maven:
-       ```xml
-       <dependency>
-           <groupId>io.github.mrblobman</groupId>
-           <artifactId>NBTProxy-api</artifactId>
-           <version>2.0.0</version>
-           <scope>provided</scope>
-       </dependency>
-       ```
+   ```xml
+   <dependency>
+       <groupId>io.github.mrblobman</groupId>
+       <artifactId>NBTProxy-api</artifactId>
+       <version>2.1.0</version>
+       <scope>provided</scope>
+   </dependency>
+   ```
 
 2. Add the api jar to your classpath. The jars can be downloaded from the releases
    tab. [Link to releases](https://github.com/MrBlobman/NBTProxy/releases)
