@@ -27,6 +27,8 @@ import io.github.mrblobman.nbt.NBTBaseTag;
 import io.github.mrblobman.nbt.NBTCompoundTag;
 import io.github.mrblobman.nbt.NBTException;
 import io.github.mrblobman.nbt.NBTIODelegate;
+import io.github.mrblobman.nbt.v1_12_R1.bridge.BlockNBTIODelegate;
+import io.github.mrblobman.nbt.v1_12_R1.bridge.LegacyBlockNBTIODelegate;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockState;
@@ -115,42 +117,16 @@ public class TagFactory extends io.github.mrblobman.nbt.TagFactory {
         }
     };
 
-    private final NBTIODelegate<BlockState> blockNBTIODelegate = new NBTIODelegate<BlockState>() {
-        @Override
-        public NBTCompoundTag read(BlockState blockState) {
-            CraftBlockState craftState = (CraftBlockState) blockState;
-            TileEntity nmsBlock = craftState.getTileEntity();
-            if (nmsBlock == null)
-                throw new NBTException("Given block is not a tile entity and does not have an NBT tag.");
+    private final NBTIODelegate<BlockState> blockNBTIODelegate;
+    {
+        boolean is1_12_1 = true;
+        try {
+            CraftBlockState.class.getMethod("getTileEntity");
+            is1_12_1 = false;
+        } catch (NoSuchMethodException ignored) {}
 
-            NBTCompoundTag tag = new io.github.mrblobman.nbt.v1_12_R1.NBTCompoundTag();
-            nmsBlock.save((NBTTagCompound) tag.getHandle());
-            return tag;
-        }
-
-        @Override
-        public void write(BlockState blockState, NBTCompoundTag tag) {
-            CraftBlockState craftState = (CraftBlockState) blockState;
-            TileEntity nmsBlock = craftState.getTileEntity();
-            if (nmsBlock == null)
-                throw new NBTException("Given block is not a tile entity and does not have an NBT tag.");
-
-            nmsBlock.a((NBTTagCompound) tag.getHandle());
-        }
-
-        @Override
-        public void append(BlockState blockState, NBTCompoundTag tag) {
-            CraftBlockState craftState = (CraftBlockState) blockState;
-            TileEntity nmsBlock = craftState.getTileEntity();
-            if (nmsBlock == null)
-                throw new NBTException("Given block is not a tile entity and does not have an NBT tag.");
-
-            NBTCompoundTag oldTag = new io.github.mrblobman.nbt.v1_12_R1.NBTCompoundTag();
-            nmsBlock.save((NBTTagCompound) tag.getHandle());
-            oldTag.putAll(tag);
-            nmsBlock.a((NBTTagCompound) oldTag.getHandle());
-        }
-    };
+        blockNBTIODelegate = is1_12_1 ? new BlockNBTIODelegate() : new LegacyBlockNBTIODelegate(this);
+    }
 
     private final NBTIODelegate<File> fileNBTIODelegate = new NBTIODelegate<File>() {
         @Override
